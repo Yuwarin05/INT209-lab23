@@ -1,22 +1,28 @@
-name: CI Test Pipeline2
+name: CI with Docker Compose
 
-# on เป็นการบอกว่า workflow นี้จะทำงานเมื่อไหร่
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+push:
+   branches:
+     - main
+pull_request:
 
-# jobs  คือสิ่งที่เราจะทำว่ามีอะไรบ้าง
 jobs:
-  build-and-test-lab23:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
+docker-ci:
+   runs-on: ubuntu-latest
 
-      - name: Simulate Build
-        run: echo "Building project lab23..."
+   steps:
+     - name: Checkout code
+       uses: actions/checkout@v3
 
-      - name: Simulate Test
-        run: echo "Running tests lab23... ✅"
+     - name: Set up Docker Compose
+       run: |
+         docker compose up -d
+         echo "⏳ Waiting for containers to initialize..."
+         sleep 20
+
+     - name: Run test inside web container
+       run: docker compose exec -it web curl http://localhost:5000/api/users
+
+     - name: Shutdown Docker Compose
+       if: always()
+       run: docker compose down
