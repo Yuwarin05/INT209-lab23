@@ -1,0 +1,22 @@
+name: CI Test Pipeline2
+
+# on เป็นการบอกว่า workflow นี้จะทำงานเมื่อไหร่
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# jobs  คือสิ่งที่เราจะทำว่ามีอะไรบ้าง
+jobs:
+  build-and-test-lab23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Simulate Build
+        run: echo "Building project lab23..."
+
+      - name: Simulate Test
+        run: echo "Running tests lab23... ✅"
